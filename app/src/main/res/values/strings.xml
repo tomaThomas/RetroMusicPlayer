@@ -277,6 +277,7 @@
     <string name="no_purchase_found">No purchase found.</string>
     <string name="no_results">No results</string>
     <string name="no_songs">You have no songs</string>
+    <string name="no_search_results">No search results</string>
     <string name="normal">Normal</string>
     <string name="normal_lyrics">Normal lyrics</string>
     <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> is not listed in the media store.]]></string>
