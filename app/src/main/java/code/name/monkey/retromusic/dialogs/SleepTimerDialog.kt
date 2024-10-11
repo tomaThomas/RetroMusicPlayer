@@ -146,6 +146,22 @@ class SleepTimerDialog : DialogFragment() {
                            nextSleepTimerElapsedTime,
                            pi
                        )
+                    }
+
+                    if (VersionUtils.hasS() && am?.canScheduleExactAlarms() != true) {
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.sleep_timer_no_permission),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        startActivity(intent)
+                    } else {
+                        am?.setExact(
+                           AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                           nextSleepTimerElapsedTime,
+                           pi
+                       )
                         Toast.makeText(
                             requireContext(),
                             requireContext().resources.getString(R.string.sleep_timer_set, minutes),
