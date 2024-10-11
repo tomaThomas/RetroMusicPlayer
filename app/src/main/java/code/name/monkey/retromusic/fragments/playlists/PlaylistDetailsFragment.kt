@@ -9,6 +9,7 @@ import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +38,9 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -52,6 +56,8 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
 
     private lateinit var playlist: PlaylistWithSongs
     private lateinit var playlistSongAdapter: OrderablePlaylistSongAdapter
+
+    private val _searchFlow = MutableSharedFlow<CharSequence?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,8 +128,14 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
             R.layout.item_queue
         )
         binding.playlistSearchView.addTextChangedListener { text ->
-                // TODO: debounce
+                lifecycleScope.launch {
+                    _searchFlow.emit(text)
+                }
+        }
+        lifecycleScope.launch {
+            _searchFlow.debounce(300).collect { text ->
                 playlistSongAdapter.onFilter(text)
+            }
         }
 
         val dragDropManager = RecyclerViewDragDropManager()
