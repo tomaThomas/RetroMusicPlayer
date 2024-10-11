@@ -17,7 +17,7 @@ yslibrary_keyboardvisibilityevent_version = "3.0.0-RC3"
 koinAndroid = "3.4.0"
 kotlinGradlePlugin = "1.8.10"
 
-kotlinxCoroutinesAndroid = "1.6.4"
+kotlinxCoroutinesAndroid = "1.8.1"
 android_tab_library_version = "2.0.3"
 fast_scroll_libraryVersion = "1.2.0"
 lifecycle_version = "2.6.1"
