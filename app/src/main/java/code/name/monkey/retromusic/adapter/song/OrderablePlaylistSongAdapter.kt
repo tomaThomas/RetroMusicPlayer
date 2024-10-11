@@ -167,4 +167,8 @@ class OrderablePlaylistSongAdapter(
         }
         notifyDataSetChanged()
     }
+
+    fun hasSongs(): Boolean {
+        return itemCount > 0 || (filtered && fullDataSet.size > 0)
+    }
 }
