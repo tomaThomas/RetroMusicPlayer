@@ -30,6 +30,21 @@
                 android:paddingBottom="16dp"
                 android:paddingHorizontal="16dp">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/playlistSearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/play_button"
+                    android:background="@null"
+                    android:hint="@string/action_search"
+                    android:inputType="text|textAutoComplete"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textAppearance="@style/TextViewSubtitle1">
+                </com.google.android.material.textfield.TextInputEditText>
+
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/image"
                     android:layout_width="0dp"
