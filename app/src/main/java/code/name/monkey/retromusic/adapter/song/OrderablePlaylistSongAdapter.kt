@@ -43,6 +43,9 @@ class OrderablePlaylistSongAdapter(
 
     val libraryViewModel: LibraryViewModel by activity.viewModel()
 
+    private var filtered = false
+    private var originalDataSet: MutableList<Song>? = null
+
     init {
         this.setHasStableIds(true)
         this.setMultiSelectMenuRes(R.menu.menu_playlists_songs_selection)
@@ -115,7 +118,7 @@ class OrderablePlaylistSongAdapter(
     }
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean {
-        return true
+        return !filtered
     }
 
     override fun onItemDragStarted(position: Int) {
@@ -127,8 +130,28 @@ class OrderablePlaylistSongAdapter(
     }
 
     fun saveSongs(playlistEntity: PlaylistEntity) {
+        onFilter(null)
         activity.lifecycleScope.launch(Dispatchers.IO) {
             libraryViewModel.insertSongs(dataSet.toSongsEntity(playlistEntity))
+        }
+    }
+
+    fun onFilter(text: CharSequence?) {
+        if (!filtered) {
+            originalDataSet = dataSet.toMutableList()
+        }
+        if (text.isNullOrEmpty()) {
+            filtered = false
+            if (originalDataSet != null) {
+                dataSet = originalDataSet as MutableList<Song>
+                notifyDataSetChanged()
+            }
+        } else {
+            filtered = true
+            if (originalDataSet != null) {
+                dataSet = originalDataSet!!.filter { song -> song.title.contains(text, ignoreCase = true) }.toMutableList()
+            }
+            notifyDataSetChanged()
         }
     }
 }
