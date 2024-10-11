@@ -107,7 +107,7 @@ class OrderablePlaylistSongAdapter(
                 super.onClick(v)
             } else {
                 val position = fullDataSet.indexOf(dataSet.get(layoutPosition))
-                MusicPlayerRemote.openQueue(fullDataSet, position, true)
+                MusicPlayerRemote.openQueueKeepShuffleMode(fullDataSet, position, true)
             }
         }
 
@@ -166,5 +166,9 @@ class OrderablePlaylistSongAdapter(
                 .toMutableList()
         }
         notifyDataSetChanged()
+    }
+
+    fun hasSongs(): Boolean {
+        return itemCount > 0 || (filtered && fullDataSet.size > 0)
     }
 }

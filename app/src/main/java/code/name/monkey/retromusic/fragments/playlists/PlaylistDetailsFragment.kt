@@ -30,6 +30,7 @@ import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.helper.menu.PlaylistMenuHelper
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.MusicUtil
+import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.ThemedFastScroller
 import com.bumptech.glide.Glide
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -79,6 +80,7 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
 //        binding.container.transitionName = playlist.playlistEntity.playlistName
 
         setUpRecyclerView()
+        setUpSearch()
         setupButtons()
         viewModel.getPlaylist().observe(viewLifecycleOwner) { playlistWithSongs ->
             playlist = playlistWithSongs
@@ -120,6 +122,33 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
         }
     }
 
+    private fun setUpSearch() {
+        if (!PreferenceUtil.enableSearchPlaylist) {
+            binding.playlistSearchView.visibility = View.GONE
+        } else {
+            binding.playlistSearchView.visibility = View.VISIBLE
+        }
+        binding.playlistSearchView.addTextChangedListener { text ->
+            lifecycleScope.launch {
+                _searchFlow.emit(text)
+                binding.clearSearch.visibility =
+                    if (text.isNullOrBlank()) View.GONE else View.VISIBLE
+            }
+        }
+        binding.clearSearch.setOnClickListener {
+            lifecycleScope.launch {
+                _searchFlow.emit(null)
+                binding.playlistSearchView.clearText()
+                binding.clearSearch.visibility = View.GONE
+            }
+        }
+        lifecycleScope.launch {
+            _searchFlow.debounce(300).collect { text ->
+                playlistSongAdapter.onFilter(text)
+            }
+        }
+    }
+
     private fun setUpRecyclerView() {
         playlistSongAdapter = OrderablePlaylistSongAdapter(
             arguments.extraPlaylistId,
@@ -127,16 +156,6 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
             ArrayList(),
             R.layout.item_queue
         )
-        binding.playlistSearchView.addTextChangedListener { text ->
-                lifecycleScope.launch {
-                    _searchFlow.emit(text)
-                }
-        }
-        lifecycleScope.launch {
-            _searchFlow.debounce(300).collect { text ->
-                playlistSongAdapter.onFilter(text)
-            }
-        }
 
         val dragDropManager = RecyclerViewDragDropManager()
 
@@ -168,8 +187,18 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
     }
 
     private fun checkIsEmpty() {
-        binding.empty.isVisible = playlistSongAdapter.itemCount == 0
-        binding.emptyText.isVisible = playlistSongAdapter.itemCount == 0
+        if (_binding != null) {
+            if (playlistSongAdapter.itemCount != 0) {
+                binding.empty.isVisible = false
+            } else {
+                binding.empty.isVisible = true
+                if (playlistSongAdapter.hasSongs()) {
+                    binding.emptyText.text = getString(R.string.no_search_results)
+                } else {
+                    binding.emptyText.text = getString(R.string.no_songs)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
