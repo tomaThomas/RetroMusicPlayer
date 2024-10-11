@@ -131,6 +131,14 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
         binding.playlistSearchView.addTextChangedListener { text ->
             lifecycleScope.launch {
                 _searchFlow.emit(text)
+                binding.clearSearch.visibility = if (text.isNullOrBlank()) View.GONE else View.VISIBLE
+            }
+        }
+        binding.clearSearch.setOnClickListener {
+            lifecycleScope.launch {
+                _searchFlow.emit(null)
+                binding.playlistSearchView.clearText()
+                binding.clearSearch.visibility = View.GONE
             }
         }
         lifecycleScope.launch {
@@ -179,8 +187,16 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
 
     private fun checkIsEmpty() {
         if (_binding != null) {
-            binding.empty.isVisible = playlistSongAdapter.itemCount == 0
-            binding.emptyText.isVisible = playlistSongAdapter.itemCount == 0
+            if (playlistSongAdapter.itemCount != 0) {
+                binding.empty.isVisible = false
+            } else {
+                binding.empty.isVisible = true
+                if (playlistSongAdapter.hasSongs()) {
+                    binding.emptyText.text = getString(R.string.no_search_results)
+                } else {
+                    binding.emptyText.text = getString(R.string.no_songs)
+                }
+            }
         }
     }
 
