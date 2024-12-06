@@ -199,10 +199,6 @@ fun MaterialCardView.animateRadius(cornerRadius: Float, pause: Boolean = true) {
     }
 }
 
-fun MaterialCardView.animateToCircle() {
-    animateRadius(measuredHeight / 2F, pause = false)
-}
-
 fun View.focusAndShowKeyboard() {
     /**
      * This is to be called when the window already has focus.
