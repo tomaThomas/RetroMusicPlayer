@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   check:
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 17
+          java-version: 21
       - uses: gradle/actions/setup-gradle@v3
       - name: Lint Android
         run: ./gradlew lint
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 17
+          java-version: 21
       - uses: gradle/actions/setup-gradle@v3
       - name: Build
         run: ./gradlew app:assemble
