@@ -5,12 +5,12 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdk 34
+    compileSdk 35
     namespace "code.name.monkey.retromusic"
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
+        targetSdk 35
 
         vectorDrawables.useSupportLibrary = true
 
