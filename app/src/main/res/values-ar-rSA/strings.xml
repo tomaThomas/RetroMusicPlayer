@@ -151,7 +151,7 @@
     <string name="create_new_backup">إنشاء</string>
     <string name="created_playlist_x">قائمة التشغيل الموجودة %1$s.</string>
     <string name="credit_title">الافراد والمساهمين</string>
-    <string name="currently_listening_to_x_by_x">يستمع حالياً إلى %1$s لـ %2$s</string>
+    <string name="currently_listening_to_x_by_x">يستمع حالياً إلى s$1% لـ s$2%</string>
     <string name="custom_artist_images">صور فنان مخصصة</string>
     <string name="customactivityoncrash_error_activity_error_details_share">مشاركة تقرير الأعطال</string>
     <string name="dark_theme_name">مظلم</string>
