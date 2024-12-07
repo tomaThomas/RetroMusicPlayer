@@ -271,6 +271,7 @@
     <string name="no_purchase_found">ไม่พบการสั่งซื้อ</string>
     <string name="no_results">ไม่มีผลลัพธ์</string>
     <string name="no_songs">คุณยังไม่มีเพลง</string>
+    <string name="no_search_results">No search results</string>
     <string name="normal">Normal</string>
     <string name="normal_lyrics">เนื้อเพลงปกติ</string>
     <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> ไม่อยู่ในรายการมีเดีย]]></string>
@@ -359,6 +360,7 @@
     <string name="pref_summary_open_source_licences">รายละเอียด License สำหรับ open source software</string>
     <string name="pref_summary_pause_history">When enabled, newly played songs won\'t show in history</string>
     <string name="pref_summary_remember_tab">ไปที่แท็บที่ใช้งานล่าสุดเมื่อเริ่มใช้งาน</string>
+    <string name="pref_summary_enable_search_playlist">Show a search field in a playlist</string>
     <string name="pref_summary_show_lyrics">Display synced lyrics over album cover</string>
     <string name="pref_summary_suggestions">Show New Music Mix on homescreen</string>
     <string name="pref_summary_swipe_anywhere_now_playing">Enables changing song by swiping anywhere on the now playing screen</string>
@@ -406,6 +408,7 @@
     <string name="pref_title_open_source_licences">สัญญาอนุญาตสำหรับโอเพนซอร์ส</string>
     <string name="pref_title_pause_history">Pause history</string>
     <string name="pref_title_remember_tab">Remember last tab</string>
+    <string name="pref_title_enable_search_playlist">Enable search in playlist</string>
     <string name="pref_title_show_lyrics">Show lyrics</string>
     <string name="pref_title_suggestions">Show suggestions</string>
     <string name="pref_title_swipe_anywhere_now_playing">Swipe anywhere to change song</string>
@@ -450,6 +453,8 @@
     <string name="retro_music_pro">Retro Music Pro</string>
     <string name="ringtone_summary">ต้องการสิทธิ์เพื่อตั้งค่าริงโทน</string>
     <string name="ringtone_title">ริงโทน (Optional)</string>
+    <string name="permission_alarm_summary">The app needs permission to schedule exact alarms to set sleep timers</string>
+    <string name="permission_alarm_title">Alarm (Optional)</string>
     <string name="saf_delete_failed">ลบไฟล์ %s ไม่สำเร็จ</string>
     <!-- SAF -->
     <string name="saf_error_uri">ไม่สามารถขอข้อมูลจาก SAF URI ได้</string>
@@ -556,4 +561,6 @@
     <string name="you_have_to_select_at_least_one_category">คุณต้องเลือกอย่างน้อยหนึ่งหมวดหมู่</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">ท่านจะติดตามการรายงานปัญหาจากเว็บไซต์</string>
     <string name="your_account_data_is_only_used_for_authentication">ข้อมูลบัญชีของท่านจะใช้สำหรับการเข้าสู่ระบบเท่านั้น</string>
+    <string name="could_not_write_tags_to_file">Could not write tags to the music file!</string>
+    <string name="sleep_timer_no_permission">No permission to schedule alarms, please allow Retro Music.</string>
 </resources>

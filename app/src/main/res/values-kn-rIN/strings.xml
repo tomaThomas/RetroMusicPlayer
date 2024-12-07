@@ -274,6 +274,7 @@
     <string name="no_purchase_found">ಯಾವುದೇ ಖರೀದಿ ಕಂಡುಬಂದಿಲ್ಲ.</string>
     <string name="no_results">ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ</string>
     <string name="no_songs">ನಿಮ್ಮ ಬಳಿ ಯಾವುದೇ ಹಾಡುಗಳಿಲ್ಲ</string>
+    <string name="no_search_results">No search results</string>
     <string name="normal">ಸಾಧಾರಣ</string>
     <string name="normal_lyrics">ಸಾಮಾನ್ಯ ಸಾಹಿತ್ಯ</string>
     <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> ಯು ಮೀಡಿಯಾ ಸ್ಟೋರ್‌ನಲ್ಲಿ ಕಂಡುಬಂದಿಲ್ಲ.]]></string>
@@ -362,6 +363,7 @@
     <string name="pref_summary_open_source_licences">ಮುಕ್ತ ಸಂಪನ್ಮೂಲ ಸಾಫ್ಟ್‌ವೇರ್‌ಗಾಗಿ ಪರವಾನಗಿ ವಿವರಗಳು</string>
     <string name="pref_summary_pause_history">ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ, ಹೊಸದಾಗಿ ಪ್ಲೇ ಮಾಡಿದ ಹಾಡುಗಳು ಹಿಸ್ಟರಿಯಲ್ಲಿ ಕಾಣಿಸುವುದಿಲ್ಲ</string>
     <string name="pref_summary_remember_tab">ಪ್ರಾರಂಭದಲ್ಲಿ ಕೊನೆಯದಾಗಿ ಬಳಸಿದ ಟ್ಯಾಬ್‌ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ</string>
+    <string name="pref_summary_enable_search_playlist">Show a search field in a playlist</string>
     <string name="pref_summary_show_lyrics">ಆಲ್ಬಮ್ ಕವರ್ ಮೇಲೆ ಸಿಂಕ್ ಮಾಡಿದ ಸಾಹಿತ್ಯವನ್ನು ಪ್ರದರ್ಶಿಸಿ</string>
     <string name="pref_summary_suggestions">ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಹೊಸ ಸಂಗೀತದ ಮಿಶ್ರಣವನ್ನು ತೋರಿಸಿ</string>
     <string name="pref_summary_swipe_anywhere_now_playing">ಈಗ ಪ್ಲೇ ಆಗುತ್ತಿರುವ ಪರದೆಯಲ್ಲಿ ಎಲ್ಲಿಯಾದರೂ ಸ್ವೈಪ್ ಮಾಡುವ ಮೂಲಕ ಹಾಡನ್ನು ಬದಲಾಯಿಸುವುದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ</string>
@@ -409,6 +411,7 @@
     <string name="pref_title_open_source_licences">ಮುಕ್ತ ಮೂಲ ಪರವಾನಗಿಗಳು</string>
     <string name="pref_title_pause_history">ವಿರಾಮದ ಹಿಸ್ಟರಿ</string>
     <string name="pref_title_remember_tab">ಕೊನೆಯ ಟ್ಯಾಬ್ ಅನ್ನು ನೆನಪಿಡಿ</string>
+    <string name="pref_title_enable_search_playlist">Enable search in playlist</string>
     <string name="pref_title_show_lyrics">ಸಾಹಿತ್ಯವನ್ನು ತೋರಿಸಿ</string>
     <string name="pref_title_suggestions">ಸಲಹೆಗಳನ್ನು ತೋರಿಸಿ</string>
     <string name="pref_title_swipe_anywhere_now_playing">ಹಾಡನ್ನು ಬದಲಾಯಿಸಲು ಎಲ್ಲಿಯಾದರೂ ಸ್ವೈಪ್ ಮಾಡಿ</string>
@@ -453,6 +456,8 @@
     <string name="retro_music_pro">Retro Music Pro</string>
     <string name="ringtone_summary">ಸಂಗೀತವನ್ನು ರಿಂಗ್‌ಟೋನ್‌ನಂತೆ ಹೊಂದಿಸಲು ನಿಮ್ಮ ಸಾಧನದ ಸಂಯೋಜನೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿಯ ಅಗತ್ಯವಿದೆ</string>
     <string name="ringtone_title">ರಿಂಗ್‌ಟೋನ್‌ (ಐಚ್ಛಿಕ)</string>
+    <string name="permission_alarm_summary">The app needs permission to schedule exact alarms to set sleep timers</string>
+    <string name="permission_alarm_title">Alarm (Optional)</string>
     <string name="saf_delete_failed">ಕಡತ ಅಳಿಸುವಿಕೆ ವಿಫಲವಾಗಿದೆ: %s</string>
     <!-- SAF -->
     <string name="saf_error_uri">SAF URI ಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
@@ -551,7 +556,7 @@
     <string name="welcome">ಸುಸ್ವಾಗತ,</string>
     <string name="what_do_you_want_to_share">ಏನನ್ನು ಹಂಚಿಕೊಳ್ಳಲು ಬಯಸುವಿರಿ?</string>
     <string name="whats_new">ಹೊಸತೇನಿದೆ</string>
-    <string name="window">ಕ್ರಿಯೆಯ ಕಿಟಿಕಿ</string>
+    <string name="window">Window</string>
     <string name="window_corner_edges">ದುಂಡಾದ ಮೂಲೆಗಳು</string>
     <string name="x_has_been_set_as_ringtone">%1$s ನನ್ನು ನಿಮ್ಮ ರಿಂಗ್ಟೊನ್ ಆಗಿ ಸೆಟ್ ಮಾಡಿ.</string>
     <string name="x_selected">%1$d‌ ಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ</string>
@@ -559,4 +564,6 @@
     <string name="you_have_to_select_at_least_one_category">ನೀವು ಕನಿಷ್ಠ ಒಂದು ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಬೇಕು.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">ನಿಮ್ಮನ್ನು ಸಮಸ್ಯೆ ಟ್ರ್ಯಾಕರ್ ಜಾಲತಾಣಕ್ಕೆ ರವಾನಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="your_account_data_is_only_used_for_authentication">ನಿಮ್ಮ ಖಾತೆಯ ಡೇಟಾವನ್ನು ದೃಢೀಕರಣಕ್ಕಾಗಿ ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ.</string>
+    <string name="could_not_write_tags_to_file">ಸಂಗೀತ ಫೈಲ್‌ಗೆ ಟ್ಯಾಗ್‌ಗಳನ್ನು ಬರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ!</string>
+    <string name="sleep_timer_no_permission">No permission to schedule alarms, please allow Retro Music.</string>
 </resources>
