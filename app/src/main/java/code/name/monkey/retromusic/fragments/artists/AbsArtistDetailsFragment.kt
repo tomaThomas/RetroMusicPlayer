@@ -66,6 +66,8 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
 
     private val savedSongSortOrder: String
         get() = PreferenceUtil.artistDetailSongSortOrder
+    private val savedAlbumSortOrder: String
+        get() = PreferenceUtil.artistAlbumSortOrder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +109,7 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
             }
         }
         setupSongSortButton()
+        setupAlbumSortButton()
         binding.appBarLayout?.statusBarForeground =
             MaterialShapeDrawable.createWithElevationOverlay(requireContext())
     }
@@ -161,12 +164,12 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
         biography = null
         this.lang = lang
         detailsViewModel.getArtistInfo(name, lang, null).observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Result.Loading -> logD("Loading")
-                    is Result.Error -> logE("Error")
-                    is Result.Success -> artistInfo(result.data)
-                }
+            when (result) {
+                is Result.Loading -> logD("Loading")
+                is Result.Error -> logE("Error")
+                is Result.Success -> artistInfo(result.data)
             }
+        }
     }
 
     private fun artistInfo(lastFmArtist: LastFmArtist?) {
@@ -303,6 +306,55 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
     private fun setSaveSortOrder(sortOrder: String) {
         PreferenceUtil.artistDetailSongSortOrder = sortOrder
         songAdapter.swapDataSet(artist.sortedSongs)
+    }
+
+    private fun setupAlbumSortButton() {
+        binding.fragmentArtistContent.albumSortOrder.setOnClickListener {
+            PopupMenu(requireContext(), binding.fragmentArtistContent.albumSortOrder).apply {
+                inflate(R.menu.menu_artist_album_sort_order)
+                setUpAlbumSortOrderMenu(menu)
+                setOnMenuItemClickListener { item ->
+                    val sortOrder = when (item.itemId) {
+                        R.id.action_sort_order_title -> SortOrder.ArtistAlbumSortOrder.ALBUM_A_Z
+                        R.id.action_sort_order_title_desc -> SortOrder.ArtistAlbumSortOrder.ALBUM_Z_A
+                        R.id.action_sort_order_year -> SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR_ASC
+                        R.id.action_sort_order_year_desc -> SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR
+                        else -> {
+                            throw IllegalArgumentException("invalid ${item.title}")
+                        }
+                    }
+                    item.isChecked = true
+                    setSaveAlbumSortOrder(sortOrder)
+                    return@setOnMenuItemClickListener true
+                }
+                show()
+            }
+        }
+    }
+
+    private fun setSaveAlbumSortOrder(sortOrder: String) {
+        PreferenceUtil.artistAlbumSortOrder = sortOrder
+        albumAdapter.swapDataSet(artist.sortedAlbums)
+    }
+
+    private fun setUpAlbumSortOrderMenu(sortOrder: Menu) {
+        when (savedAlbumSortOrder) {
+            SortOrder.ArtistAlbumSortOrder.ALBUM_A_Z -> sortOrder.findItem(R.id.action_sort_order_title).isChecked =
+                true
+
+            SortOrder.ArtistAlbumSortOrder.ALBUM_Z_A -> sortOrder.findItem(R.id.action_sort_order_title_desc).isChecked =
+                true
+
+            SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR_ASC -> sortOrder.findItem(R.id.action_sort_order_year).isChecked =
+                true
+
+            SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR -> sortOrder.findItem(R.id.action_sort_order_year_desc).isChecked =
+                true
+
+            else -> {
+                throw IllegalArgumentException("invalid $savedAlbumSortOrder")
+            }
+        }
     }
 
     private fun setUpSortOrderMenu(sortOrder: Menu) {
