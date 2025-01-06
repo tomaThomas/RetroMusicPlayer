@@ -21,26 +21,26 @@ android {
         buildConfigField("String", "GOOGLE_PLAY_LICENSING_KEY", "\"${getProperty(getProperties('../public.properties'), 'GOOGLE_PLAY_LICENSE_KEY')}\"")
     }
     def signingProperties = getProperties('retro.properties')
-    def releaseSigning
+    def theSigningConfig
     if (signingProperties != null) {
-        releaseSigning = signingConfigs.create("release") {
+        theSigningConfig = signingConfigs.create("release") {
             storeFile file(getProperty(signingProperties, 'storeFile'))
             keyAlias getProperty(signingProperties, 'keyAlias')
             storePassword getProperty(signingProperties, 'storePassword')
             keyPassword getProperty(signingProperties, 'keyPassword')
         }
     } else {
-        releaseSigning = signingConfigs.debug
+        theSigningConfig = signingConfigs.debug
     }
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig releaseSigning
+            signingConfig theSigningConfig
         }
         debug {
-            signingConfig releaseSigning
+            signingConfig theSigningConfig
             applicationIdSuffix '.debug'
             versionNameSuffix ' DEBUG'
         }
