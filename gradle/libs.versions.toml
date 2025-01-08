@@ -33,7 +33,7 @@ orgEclipseEgitGithubCore = "2.1.5"
 playServicesCastFramework = "21.3.0"
 preference_version = "1.2.1"
 appcompat_version = "1.6.1"
-google_play_review_version = "2.0.1"
+google_play_review_version = "2.0.2"
 room_version = "2.6.1"
 core_version = "1.12.0"
 
