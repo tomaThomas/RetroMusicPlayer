@@ -172,4 +172,6 @@ dependencies {
     implementation libs.fastscroll.library
     implementation libs.customactivityoncrash
     implementation libs.tankery.circularSeekBar
+
+    implementation libs.androidx.exoplayer
 }

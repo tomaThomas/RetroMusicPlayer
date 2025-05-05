@@ -15,6 +15,7 @@ package code.name.monkey.retromusic.service
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.PowerManager
 import android.util.Log
 import code.name.monkey.retromusic.R
@@ -67,7 +68,7 @@ class MultiPlayer(context: Context) : LocalPlayback(context) {
      *
      * @param path The path of the file, or the http/rtsp URL of the stream you want to play
      */
-    override fun setNextDataSource(path: String?) {
+    override fun setNextDataSource(path: Uri?) {
         try {
             mCurrentMediaPlayer.setNextMediaPlayer(null)
         } catch (e: IllegalArgumentException) {
@@ -87,7 +88,7 @@ class MultiPlayer(context: Context) : LocalPlayback(context) {
             mNextMediaPlayer = MediaPlayer()
             mNextMediaPlayer?.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             mNextMediaPlayer?.audioSessionId = audioSessionId
-            setDataSourceImpl(mNextMediaPlayer!!, path) { success ->
+            setDataSourceImpl(mNextMediaPlayer!!, path.toString()) { success ->
                 if (success) {
                     try {
                         mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer)

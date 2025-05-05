@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.net.Uri
 import android.os.PowerManager
 import code.name.monkey.appthemehelper.util.VersionUtils.hasMarshmallow
 import code.name.monkey.retromusic.R
@@ -146,11 +147,11 @@ class CrossFadePlayer(context: Context) : LocalPlayback(context) {
         }
     }
 
-    override fun setNextDataSource(path: String?) {
+    override fun setNextDataSource(path: Uri?) {
         // Store the next song path in nextDataSource, we'll need this just in case
         // if the user closes the app, then we can't get the nextSong from musicService
         // As MusicPlayerRemote won't have access to the musicService
-        nextDataSource = path
+        nextDataSource = path.toString()
     }
 
     override fun setAudioSessionId(sessionId: Int): Boolean {
