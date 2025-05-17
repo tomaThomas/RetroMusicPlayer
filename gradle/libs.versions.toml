@@ -88,7 +88,7 @@ okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercept
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit_version" }
 
 #misc
-gridLayout = { group = "androidx.gridlayout", name = "gridlayout", version = "1.0.0" }
+gridLayout = { group = "androidx.gridlayout", name = "gridlayout", version = "1.1.0" }
 android-material = { module = "com.google.android.material:material", version.ref = "mdc_version" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 advrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version.ref = "advrecyclerview" }
