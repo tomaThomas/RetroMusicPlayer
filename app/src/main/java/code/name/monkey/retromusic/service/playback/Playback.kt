@@ -26,11 +26,21 @@ interface Playback {
 
     val audioSessionId: Int
 
-    fun setDataSource(
-        song: Song, force: Boolean, completion: (success: Boolean) -> Unit,
+    fun setPlayingQueue(
+        playingQueue: List<Song>,
+        position: Int,
+        completion: (success: Boolean) -> Unit,
     )
 
-    fun setNextDataSource(path: Uri?)
+    @Deprecated("To be removed")
+    fun setDataSource(
+        song: Song, force: Boolean, completion: (success: Boolean) -> Unit,
+    ) {
+    }
+
+    @Deprecated("To be removed")
+    fun setNextDataSource(path: Uri?) {
+    }
 
     var callbacks: PlaybackCallbacks?
 

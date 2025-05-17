@@ -22,6 +22,7 @@ import code.name.monkey.retromusic.util.PreferenceUtil.playbackPitch
 import code.name.monkey.retromusic.util.PreferenceUtil.playbackSpeed
 import code.name.monkey.retromusic.util.logE
 import kotlinx.coroutines.*
+import java.util.ArrayList
 
 /** @author Prathamesh M */
 
@@ -32,7 +33,8 @@ import kotlinx.coroutines.*
 * play but with decreasing volume and start the player with the next song with increasing volume
 * and vice versa for upcoming song and so on.
 */
-class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
+    MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentPlayer: CurrentPlayer = CurrentPlayer.NOT_SET
     private var player1 = MediaPlayer()
@@ -40,7 +42,7 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
     private var durationListener = DurationListener()
     private var mIsInitialized = false
     private var hasDataSource: Boolean = false /* Whether first player has DataSource */
-    private var nextDataSource:String? = null
+    private var nextDataSource: String? = null
     private var crossFadeAnimator: Animator? = null
     override var callbacks: PlaybackCallbacks? = null
     private var crossFadeDuration = PreferenceUtil.crossFadeDuration
@@ -130,6 +132,13 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
     override val isPlaying: Boolean
         get() = mIsInitialized && getCurrentPlayer()?.isPlaying == true
 
+    override fun setPlayingQueue(
+        playingQueue: List<Song>,
+        position: Int,
+        completion: (success: Boolean) -> Unit,
+    ) {
+    }
+
     override fun setDataSource(
         song: Song,
         force: Boolean,
@@ -217,9 +226,11 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
             CurrentPlayer.PLAYER_ONE -> {
                 player1
             }
+
             CurrentPlayer.PLAYER_TWO -> {
                 player2
             }
+
             CurrentPlayer.NOT_SET -> {
                 null
             }
@@ -231,9 +242,11 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
             CurrentPlayer.PLAYER_ONE -> {
                 player2
             }
+
             CurrentPlayer.PLAYER_TWO -> {
                 player1
             }
+
             CurrentPlayer.NOT_SET -> {
                 null
             }

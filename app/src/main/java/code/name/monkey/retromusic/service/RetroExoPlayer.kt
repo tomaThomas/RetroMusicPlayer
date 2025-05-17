@@ -21,6 +21,7 @@ import code.name.monkey.retromusic.service.playback.Playback.PlaybackCallbacks
 import code.name.monkey.retromusic.util.PreferenceUtil.playbackPitch
 import code.name.monkey.retromusic.util.PreferenceUtil.playbackSpeed
 import code.name.monkey.retromusic.util.logE
+import java.util.ArrayList
 
 class RetroExoPlayer(context: Context) : AudioManagerPlayback(context), Player.Listener {
     private var player: ExoPlayer = ExoPlayer.Builder(context).build()
@@ -36,20 +37,17 @@ class RetroExoPlayer(context: Context) : AudioManagerPlayback(context), Player.L
         player.setWakeMode(C.WAKE_MODE_LOCAL)
     }
 
-    /**
-     * @param song The song object you want to play
-     * @return True if the `player` has been prepared and is ready to play, false otherwise
-     */
-    override fun setDataSource(
-        song: Song,
-        force: Boolean,
+    override fun setPlayingQueue(
+        playingQueue: List<Song>,
+        position: Int,
         completion: (success: Boolean) -> Unit,
     ) {
         isInitialized = false
-        val mediaItem = MediaItem.fromUri(song.uri)
+        val mediaItems = playingQueue.map { song -> MediaItem.fromUri(song.uri) }
         try {
             Handler(Looper.getMainLooper()).post {
-                player.setMediaItem(mediaItem)
+                player.setMediaItems(mediaItems)
+                player.seekTo(position, 0)
                 player.setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(C.USAGE_MEDIA)
@@ -76,13 +74,6 @@ class RetroExoPlayer(context: Context) : AudioManagerPlayback(context), Player.L
             completion(false)
         }
     }
-
-    /**
-     * Set the MediaPlayer to start when this MediaPlayer finishes playback.
-     *
-     * @param path The path of the file, or the http/rtsp URL of the stream you want to play
-     */
-    override fun setNextDataSource(path: Uri?) {}
 
     /**
      * Starts or resumes playback.
@@ -129,10 +120,12 @@ class RetroExoPlayer(context: Context) : AudioManagerPlayback(context), Player.L
     }
 
     /**
-     * Checks whether the MultiPlayer is playing.
+     * Checks whether ExoPlayer is playing.
      */
     override val isPlaying: Boolean
-        get() = isInitialized && player.isPlaying
+        get() = isInitialized && exoIsPlaying
+
+    private var exoIsPlaying = false
 
     /**
      * Gets the duration of the file.
@@ -234,10 +227,25 @@ class RetroExoPlayer(context: Context) : AudioManagerPlayback(context), Player.L
         }
     }
 
+    override fun onEvents(player: Player, events: Player.Events) {
+        super.onEvents(player, events)
+        if (events.contains(Player.EVENT_IS_PLAYING_CHANGED)) {
+            exoIsPlaying = player.isPlaying
+            callbacks?.onPlayStateChanged()
+        }
+    }
+
     override fun setCrossFadeDuration(duration: Int) {}
 
     override fun setPlaybackSpeedPitch(speed: Float, pitch: Float) {
         player.playbackParameters = PlaybackParameters(speed, pitch)
+    }
+
+    fun setPosition(position: Int, completion: (success: Boolean) -> Unit) {
+        Handler(Looper.getMainLooper()).post {
+            player.seekTo(position, 0)
+            completion(true)
+        }
     }
 
     companion object {

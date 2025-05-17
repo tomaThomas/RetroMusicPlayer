@@ -180,6 +180,7 @@ class MusicService : MediaBrowserServiceCompat(),
 
     @JvmField
     var playingQueue = ArrayList<Song>()
+    var playingQueueAtMediaPlayer = false
 
     private var playerHandler: Handler? = null
 
@@ -452,7 +453,8 @@ class MusicService : MediaBrowserServiceCompat(),
     }
 
     private fun setPosition(position: Int) {
-        openTrackAndPrepareNextAt(position) { success ->
+        // TODO: do not set whole queue again
+        openQueueAt(position) { success ->
             if (success) {
                 notifyChange(PLAY_STATE_CHANGED)
             }
@@ -512,6 +514,7 @@ class MusicService : MediaBrowserServiceCompat(),
                 this.shuffleMode = shuffleMode
                 val currentSongId = Objects.requireNonNull(currentSong).id
                 playingQueue = ArrayList(originalPlayingQueue)
+                playingQueueAtMediaPlayer = false
                 var newPosition = 0
                 for (song in playingQueue) {
                     if (song.id == currentSongId) {
@@ -727,7 +730,6 @@ class MusicService : MediaBrowserServiceCompat(),
 
     override fun onTrackWentToNext() {
         if (pendingQuit || repeatMode == REPEAT_MODE_NONE && isLastTrack) {
-            playbackManager.setNextDataSource(null)
             pause(false)
             seek(0, false)
             if (pendingQuit) {
@@ -736,7 +738,6 @@ class MusicService : MediaBrowserServiceCompat(),
             }
         } else {
             position = nextPosition
-            prepareNextImpl()
             notifyChange(META_CHANGED)
         }
     }
@@ -763,6 +764,7 @@ class MusicService : MediaBrowserServiceCompat(),
             // it is important to copy the playing queue here first as we might add/remove songs later
             originalPlayingQueue = ArrayList(playingQueue)
             this.playingQueue = ArrayList(originalPlayingQueue)
+            playingQueueAtMediaPlayer = false
             var position = startPosition
             if (shuffleMode == SHUFFLE_MODE_SHUFFLE) {
                 makeShuffleList(this.playingQueue, startPosition)
@@ -778,15 +780,21 @@ class MusicService : MediaBrowserServiceCompat(),
     }
 
     @Synchronized
-    fun openTrackAndPrepareNextAt(position: Int, completion: (success: Boolean) -> Unit) {
+    fun openQueueAt(position: Int, completion: (success: Boolean) -> Unit) {
         this.position = position
-        openCurrent { success ->
+        val force = if (!trackEndedByCrossfade) {
+            true
+        } else {
+            trackEndedByCrossfade = false
+            false
+        }
+        val nextPosition = getNextPosition(false)
+        playbackManager.setPlayingQueue(playingQueue, position, nextPosition, force, !playingQueueAtMediaPlayer) { success ->
+            playingQueueAtMediaPlayer = true
             completion(success)
-            if (success) {
-                prepareNextImpl()
-            }
             notifyChange(META_CHANGED)
             notHandledMetaChangedForCurrentTrack = false
+            this.nextPosition = nextPosition
         }
     }
 
@@ -819,7 +827,7 @@ class MusicService : MediaBrowserServiceCompat(),
         // So it will use Main dispatcher
         // And by using Default dispatcher for local playback we are reduce the burden of main thread
         serviceScope.launch(if (playbackManager.isLocalPlayback) Default else Main) {
-            openTrackAndPrepareNextAt(position) { success ->
+            openQueueAt(position) { success ->
                 if (success) {
                     play()
                 } else {
@@ -943,10 +951,10 @@ class MusicService : MediaBrowserServiceCompat(),
                 if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
                     originalPlayingQueue = ArrayList(restoredOriginalQueue)
                     playingQueue = ArrayList(restoredQueue)
+                    playingQueueAtMediaPlayer = false
                     position = restoredPosition
                     withContext(Main) {
-                        openCurrent {
-                            prepareNext()
+                        openQueueAt(position) { success ->
                             if (restoredPositionInTrack > 0) {
                                 seek(restoredPositionInTrack)
                             }
@@ -1200,19 +1208,6 @@ class MusicService : MediaBrowserServiceCompat(),
         isForeground = false
     }
 
-    @Synchronized
-    private fun openCurrent(completion: (success: Boolean) -> Unit) {
-        val force = if (!trackEndedByCrossfade) {
-            true
-        } else {
-            trackEndedByCrossfade = false
-            false
-        }
-        playbackManager.setDataSource(currentSong, force) { success ->
-            completion(success)
-        }
-    }
-
     fun switchToLocalPlayback() {
         playbackManager.switchToLocalPlayback(this::restorePlaybackState)
     }
@@ -1223,7 +1218,7 @@ class MusicService : MediaBrowserServiceCompat(),
 
     private fun restorePlaybackState(wasPlaying: Boolean, progress: Int) {
         playbackManager.setCallbacks(this)
-        openTrackAndPrepareNextAt(position) { success ->
+        openQueueAt(position) { success ->
             if (success) {
                 seek(progress)
                 if (wasPlaying) {

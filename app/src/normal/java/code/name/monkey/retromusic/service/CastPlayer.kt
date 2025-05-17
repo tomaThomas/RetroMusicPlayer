@@ -10,6 +10,7 @@ import com.google.android.gms.cast.MediaSeekOptions
 import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import java.util.ArrayList
 
 class CastPlayer(castSession: CastSession) : Playback, RemoteMediaClient.Callback() {
 
@@ -32,6 +33,13 @@ class CastPlayer(castSession: CastSession) : Playback, RemoteMediaClient.Callbac
     override val audioSessionId: Int = 0
 
     override var callbacks: Playback.PlaybackCallbacks? = null
+
+    override fun setPlayingQueue(
+        playingQueue: List<Song>,
+        position: Int,
+        completion: (success: Boolean) -> Unit,
+    ) {
+    }
 
     override fun setDataSource(
         song: Song,
@@ -103,6 +111,7 @@ class CastPlayer(castSession: CastSession) : Playback, RemoteMediaClient.Callbac
                     callbacks?.onTrackEnded()
                 }
             }
+
             MediaStatus.PLAYER_STATE_PLAYING, MediaStatus.PLAYER_STATE_PAUSED -> {
                 callbacks?.onPlayStateChanged()
             }
