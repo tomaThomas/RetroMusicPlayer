@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.PowerManager
 import androidx.core.net.toUri
 import code.name.monkey.appthemehelper.util.VersionUtils
-import code.name.monkey.appthemehelper.util.VersionUtils.hasMarshmallow
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.extensions.showToast
 import code.name.monkey.retromusic.extensions.uri
@@ -373,9 +372,8 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
             )
-            if (VersionUtils.hasMarshmallow())
-                player.playbackParams =
-                    PlaybackParams().setSpeed(playbackSpeed).setPitch(playbackPitch)
+            player.playbackParams =
+                PlaybackParams().setSpeed(playbackSpeed).setPitch(playbackPitch)
 
             player.setOnPreparedListener {
                 player.setOnPreparedListener(null)
@@ -398,11 +396,9 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context), MediaPl
 internal fun crossFadeScope(): CoroutineScope = CoroutineScope(Job() + Dispatchers.Default)
 
 fun MediaPlayer.setPlaybackSpeedPitch(speed: Float, pitch: Float) {
-    if (hasMarshmallow()) {
-        val wasPlaying = isPlaying
-        playbackParams = PlaybackParams().setSpeed(speed).setPitch(pitch)
-        if (!wasPlaying) {
-            pause()
-        }
+    val wasPlaying = isPlaying
+    playbackParams = PlaybackParams().setSpeed(speed).setPitch(pitch)
+    if (!wasPlaying) {
+        pause()
     }
 }
