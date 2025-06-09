@@ -14,15 +14,15 @@
  */
 package code.name.monkey.retromusic.appshortcuts.shortcuttype
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.ShortcutInfo
 import android.os.Build
+import androidx.annotation.RequiresApi
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.appshortcuts.AppShortcutIconGenerator
 import code.name.monkey.retromusic.appshortcuts.AppShortcutLauncherActivity
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+@RequiresApi(Build.VERSION_CODES.N_MR1)
 class LastAddedShortcutType(context: Context) : BaseShortcutType(context) {
 
     override val shortcutInfo: ShortcutInfo

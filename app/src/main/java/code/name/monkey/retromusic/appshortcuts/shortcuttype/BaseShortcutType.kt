@@ -14,15 +14,15 @@
  */
 package code.name.monkey.retromusic.appshortcuts.shortcuttype
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import code.name.monkey.retromusic.appshortcuts.AppShortcutLauncherActivity
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+@RequiresApi(Build.VERSION_CODES.N_MR1)
 abstract class BaseShortcutType(internal var context: Context) {
 
     internal abstract val shortcutInfo: ShortcutInfo
