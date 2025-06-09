@@ -64,17 +64,17 @@ object NavigationUtil {
 
     private fun stockEqualizer(activity: Activity) {
         val sessionId = audioSessionId
-        if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
-            activity.showToast(R.string.no_audio_ID, Toast.LENGTH_LONG)
-        } else {
-            try {
-                val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
-                effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                activity.startActivityForResult(effects, 0)
-            } catch (notFound: ActivityNotFoundException) {
-                activity.showToast(R.string.no_equalizer)
-            }
+//        if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
+//            activity.showToast(R.string.no_audio_ID, Toast.LENGTH_LONG)
+//        } else {
+        try {
+            val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+            effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
+            effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            activity.startActivityForResult(effects, 0)
+        } catch (notFound: ActivityNotFoundException) {
+            activity.showToast(R.string.no_equalizer)
         }
+//        }
     }
 }

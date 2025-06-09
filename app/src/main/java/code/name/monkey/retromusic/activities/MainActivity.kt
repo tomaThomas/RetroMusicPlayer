@@ -18,6 +18,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.contains
 import androidx.navigation.ui.setupWithNavController
@@ -46,6 +47,10 @@ class MainActivity : AbsCastActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val intent = Intent(this, MusicService::class.java)
+        ContextCompat.startForegroundService(this, intent)
+
         setTaskDescriptionColorAuto()
         hideStatusBar()
         updateTabs()

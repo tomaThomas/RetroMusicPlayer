@@ -51,22 +51,12 @@ abstract class AbsMusicServiceActivity : AbsBaseActivity(), IMusicServiceEventLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        serviceToken = MusicPlayerRemote.bindToService(this, object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                this@AbsMusicServiceActivity.onServiceConnected()
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-                this@AbsMusicServiceActivity.onServiceDisconnected()
-            }
-        })
 
         setPermissionDeniedMessage(getString(R.string.permission_external_storage_denied))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        MusicPlayerRemote.unbindFromService(serviceToken)
         if (receiverRegistered && musicStateReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(musicStateReceiver!!)
             receiverRegistered = false

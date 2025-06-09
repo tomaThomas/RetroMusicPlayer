@@ -1,78 +1,35 @@
-/*
- * Copyright (c) 2019 Hemanth Savarala.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by
- *  the Free Software Foundation either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- */
-
 package code.name.monkey.retromusic.service.playback
 
 import android.net.Uri
-import code.name.monkey.retromusic.model.Song
-
+import androidx.media3.common.Player
+import androidx.media3.session.MediaSession
 
 interface Playback {
+    val audioSessionId: String?
 
-    val isInitialized: Boolean
+    fun create()
 
-    val isPlaying: Boolean
-
-    val audioSessionId: Int
+    fun getPlayer(): Player
 
     fun setPlayingQueue(
-        playingQueue: List<Song>,
+        playingQueue: List<Uri>,
         position: Int,
         completion: (success: Boolean) -> Unit,
     )
 
-    @Deprecated("To be removed")
-    fun setDataSource(
-        song: Song, force: Boolean, completion: (success: Boolean) -> Unit,
-    ) {
-    }
+    fun release()
 
-    @Deprecated("To be removed")
-    fun setNextDataSource(path: Uri?) {
-    }
+    fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession?
 
-    var callbacks: PlaybackCallbacks?
+    fun start()
 
-    fun start(): Boolean
+    fun playSongAt(position: Int)
 
     fun stop()
 
-    fun release()
+    fun pause()
 
-    fun pause(): Boolean
+    fun setVolume(volume: Float)
 
-    fun duration(): Int
-
-    fun position(): Int
-
-    fun seek(whereto: Int, force: Boolean): Int
-
-    fun setVolume(vol: Float): Boolean
-
-    fun setAudioSessionId(sessionId: Int): Boolean
-
-    fun setCrossFadeDuration(duration: Int)
-
-    fun setPlaybackSpeedPitch(speed: Float, pitch: Float)
-
-    interface PlaybackCallbacks {
-        fun onTrackWentToNext()
-
-        fun onTrackEnded()
-
-        fun onTrackEndedWithCrossfade()
-
-        fun onPlayStateChanged()
-    }
+    fun seek(position: Int, millis: Long)
 }

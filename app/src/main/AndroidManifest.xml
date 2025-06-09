@@ -298,9 +298,10 @@
             android:name=".service.MusicService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_MEDIA_SESSION_SERVICE">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
 

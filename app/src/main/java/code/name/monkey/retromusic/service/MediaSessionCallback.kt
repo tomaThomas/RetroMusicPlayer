@@ -185,18 +185,18 @@ class MediaSessionCallback(
 
     override fun onCustomAction(action: String, extras: Bundle?) {
         when (action) {
-            CYCLE_REPEAT -> {
-                cycleRepeatMode()
-                musicService.updateMediaSessionPlaybackState()
-            }
-
-            TOGGLE_SHUFFLE -> {
-                musicService.toggleShuffle()
-                musicService.updateMediaSessionPlaybackState()
-            }
-            TOGGLE_FAVORITE -> {
-                musicService.toggleFavorite()
-            }
+//            CYCLE_REPEAT -> {
+//                cycleRepeatMode()
+//                musicService.updateMediaSessionPlaybackState()
+//            }
+//
+//            TOGGLE_SHUFFLE -> {
+//                musicService.toggleShuffle()
+//                musicService.updateMediaSessionPlaybackState()
+//            }
+//            TOGGLE_FAVORITE -> {
+//                musicService.toggleFavorite()
+//            }
             else -> {
                 logE("Unsupported action: $action")
             }

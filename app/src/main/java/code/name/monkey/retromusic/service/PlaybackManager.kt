@@ -1,228 +1,92 @@
 package code.name.monkey.retromusic.service
 
-import android.content.Context
-import android.content.Intent
-import android.media.audiofx.AudioEffect
-import android.net.Uri
+import android.app.Notification
+import android.app.Service.STOP_FOREGROUND_REMOVE
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSessionService
+import androidx.media3.ui.PlayerNotificationManager
 import code.name.monkey.retromusic.extensions.uri
 import code.name.monkey.retromusic.model.Song
+import code.name.monkey.retromusic.service.playback.ExoPlayback
 import code.name.monkey.retromusic.service.playback.Playback
-import code.name.monkey.retromusic.util.PreferenceUtil
-import java.util.ArrayList
 
+@OptIn(UnstableApi::class)
+class PlaybackManager(val context: MediaSessionService) {
+    var playback: Playback = ExoPlayback(context)
 
-class PlaybackManager(val context: Context) {
+    private var notificationManager: PlayerNotificationManager? = null
 
-    var playback: Playback? = null
-    private var playbackLocation = PlaybackLocation.LOCAL
+    fun create() {
+        playback.create()
 
-    val isLocalPlayback get() = playbackLocation == PlaybackLocation.LOCAL
-
-    val audioSessionId: Int
-        get() = if (playback != null) {
-            playback!!.audioSessionId
-        } else 0
-
-    val songDurationMillis: Int
-        get() = if (playback != null) {
-            playback!!.duration()
-        } else -1
-
-    val songProgressMillis: Int
-        get() = if (playback != null) {
-            playback!!.position()
-        } else -1
-
-    val isPlaying: Boolean
-        get() = playback != null && playback!!.isPlaying
-
-    init {
-        playback = createLocalPlayback()
-    }
-
-    fun setCallbacks(callbacks: Playback.PlaybackCallbacks) {
-        playback?.callbacks = callbacks
-    }
-
-    fun play(onNotInitialized: () -> Unit) {
-        if (playback != null && !playback!!.isPlaying) {
-            if (!playback!!.isInitialized) {
-                onNotInitialized()
-            } else {
-                openAudioEffectSession()
-                if (playbackLocation == PlaybackLocation.LOCAL) {
-                    if (playback is CrossFadePlayer) {
-                        if (!(playback as CrossFadePlayer).isCrossFading) {
-                            AudioFader.startFadeAnimator(playback!!, true)
-                        }
-                    } else {
-                        AudioFader.startFadeAnimator(playback!!, true)
+        notificationManager = PlayerNotificationManager.Builder(
+            context,
+            1,
+            "playing_notification"
+        )
+            .setMediaDescriptionAdapter(DescriptionAdapter(context))
+            .setNotificationListener(object : PlayerNotificationManager.NotificationListener {
+                override fun onNotificationPosted(
+                    notificationId: Int,
+                    notification: Notification,
+                    ongoing: Boolean
+                ) {
+                    if (ongoing) {
+                        context.startForeground(notificationId, notification)
                     }
                 }
-                playback?.start()
-            }
-        }
-    }
 
-    fun pause(force: Boolean, onPause: () -> Unit) {
-        if (playback != null && playback!!.isPlaying) {
-            if (force) {
-                playback?.pause()
-                closeAudioEffectSession()
-                onPause()
-            } else {
-                AudioFader.startFadeAnimator(playback!!, false) {
-                    //Code to run when Animator Ends
-                    playback?.pause()
-                    closeAudioEffectSession()
-                    onPause()
+                override fun onNotificationCancelled(
+                    notificationId: Int,
+                    dismissedByUser: Boolean
+                ) {
+                    context.stopForeground(STOP_FOREGROUND_REMOVE)
+                    context.stopSelf()
                 }
-            }
-        }
-    }
+            })
+            .build()
 
-    fun seek(millis: Int, force: Boolean): Int = playback!!.seek(millis, force)
-
-    fun setPlayingQueue(
-        playingQueue: ArrayList<Song>,
-        position: Int,
-        nextPosition: Int,
-        force: Boolean,
-        queueChanged: Boolean,
-        completion: (success: Boolean) -> Unit,
-    ) {
-        if (playback is RetroExoPlayer) {
-            if (queueChanged) {
-                (playback as RetroExoPlayer).setPlayingQueue(playingQueue, position) { success ->
-                    completion(success)
-                }
-            } else {
-                (playback as RetroExoPlayer).setPosition(position) { success: Boolean ->
-                    completion(success)
-                }
-            }
-        } else {
-            setDataSource(playingQueue[position], force) { success ->
-                completion(success)
-                if (success) {
-                    try {
-                        setNextDataSource(playingQueue[nextPosition].uri)
-                    } catch (ignored: Exception) {
-                    }
-                }
-            }
-        }
-    }
-
-    @Deprecated("To be removed")
-    private fun setDataSource(
-        song: Song,
-        force: Boolean,
-        completion: (success: Boolean) -> Unit,
-    ) {
-        playback?.setDataSource(song, force, completion)
-    }
-
-    @Deprecated("To be removed")
-    fun setNextDataSource(trackUri: Uri?) {
-        playback?.setNextDataSource(trackUri)
-    }
-
-    fun setCrossFadeDuration(duration: Int) {
-        playback?.setCrossFadeDuration(duration)
-    }
-
-    /**
-     * @param crossFadeDuration CrossFade duration
-     * @return Whether switched playback
-     */
-    fun maybeSwitchToCrossFade(crossFadeDuration: Int): Boolean {
-        /* Switch to RetroExoPlayer if CrossFade duration is 0 and
-                Playback is not an instance of RetroExoPlayer */
-        if (playback !is RetroExoPlayer && crossFadeDuration == 0) {
-            if (playback != null) {
-                playback?.release()
-            }
-            playback = null
-            playback = RetroExoPlayer(context)
-            return true
-        } else if (playback !is CrossFadePlayer && crossFadeDuration > 0) {
-            if (playback != null) {
-                playback?.release()
-            }
-            playback = null
-            playback = CrossFadePlayer(context)
-            return true
-        }
-        return false
+        notificationManager?.setPlayer(playback.getPlayer())
     }
 
     fun release() {
-        playback?.release()
-        playback = null
-        closeAudioEffectSession()
+        playback.release()
     }
 
-    private fun openAudioEffectSession() {
-        val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-        intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-        context.sendBroadcast(intent)
+    fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+        return playback.onGetSession(controllerInfo)
     }
 
-    private fun closeAudioEffectSession() {
-        val audioEffectsIntent = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-        if (playback != null) {
-            audioEffectsIntent.putExtra(
-                AudioEffect.EXTRA_AUDIO_SESSION,
-                playback!!.audioSessionId
-            )
-        }
-        audioEffectsIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-        context.sendBroadcast(audioEffectsIntent)
-    }
+    val audioSessionId: String
+        get() = playback.audioSessionId ?: ""
 
-    fun switchToLocalPlayback(onChange: (wasPlaying: Boolean, progress: Int) -> Unit) {
-        playbackLocation = PlaybackLocation.LOCAL
-        switchToPlayback(createLocalPlayback(), onChange)
-    }
-
-    fun switchToRemotePlayback(
-        castPlayer: CastPlayer,
-        onChange: (wasPlaying: Boolean, progress: Int) -> Unit,
+    fun setPlayingQueue(
+        queue: List<Song>,
+        position: Int,
+        completion: (success: Boolean) -> Unit,
     ) {
-        playbackLocation = PlaybackLocation.REMOTE
-        switchToPlayback(castPlayer, onChange)
+        val songUris = queue.map { q -> q.uri }
+        playback.setPlayingQueue(songUris, position, completion)
     }
 
-    private fun switchToPlayback(
-        playback: Playback,
-        onChange: (wasPlaying: Boolean, progress: Int) -> Unit,
-    ) {
-        val oldPlayback = this.playback
-        val wasPlaying: Boolean = oldPlayback?.isPlaying == true
-        val progress: Int = oldPlayback?.position() ?: 0
-        this.playback = playback
-        oldPlayback?.stop()
-        onChange(wasPlaying, progress)
+    fun start() {
+        playback.start()
     }
 
-    private fun createLocalPlayback(): Playback {
-        // Set RetroExoPlayer when crossfade duration is 0 i.e. off
-        return if (PreferenceUtil.crossFadeDuration == 0) {
-            RetroExoPlayer(context)
-        } else {
-            CrossFadePlayer(context)
-        }
+    fun pause() {
+        playback.pause()
     }
 
-    fun setPlaybackSpeedPitch(playbackSpeed: Float, playbackPitch: Float) {
-        playback?.setPlaybackSpeedPitch(playbackSpeed, playbackPitch)
+    fun playSongAt(position: Int) {
+        playback.playSongAt(position)
     }
-}
 
-enum class PlaybackLocation {
-    LOCAL,
-    REMOTE
+    fun seek(position: Int, millis: Int) {
+        playback.seek(position, millis.toLong())
+    }
+
+    val isPlaying: Boolean
+        get() = false // TODO:
 }
