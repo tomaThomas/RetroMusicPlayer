@@ -38,7 +38,7 @@ room_version = "2.7.1"
 core_version = "1.16.0"
 
 #plugins
-devTools_ksp_version = "2.1.21-2.0.1"
+devTools_ksp_version = "2.3.11"
 ben_manes_versoin = "0.46.0"
 slidableactivity = "2.1.0"
 
