@@ -39,7 +39,7 @@ core_version = "1.16.0"
 
 #plugins
 devTools_ksp_version = "2.1.21-2.0.1"
-ben_manes_versoin = "0.46.0"
+ben_manes_versoin = "0.61.0"
 slidableactivity = "2.1.0"
 
 
